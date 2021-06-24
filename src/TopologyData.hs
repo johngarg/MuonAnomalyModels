@@ -1,3 +1,5 @@
+-- | This module defines the different irreps that can furnish the topologies.
+
 module TopologyData where
 
 import           Enumerate
@@ -6,6 +8,7 @@ import           Enumerate
 -- Irrep data
 -- NOTE: All b -> sμμ data is in the order ψ1, φ1, ψ2, φ2
 -- NOTE: Topology "c" contains two VLFs
+-- TODO: Still need to put in g-2 data
 
 lorentz :: Topo -> [Irrep]
 lorentz BC = map applySU2SU2 [(1, 0), (1, 0), (0, 0), (1, 0), (1, 0), (0, 0)]
@@ -62,8 +65,3 @@ hypercharge BA y = map U1 [y, -y - 1, y + 4, -y - 1]
 hypercharge BB y = map U1 [y, -y - 1, y, 3 - y]
 hypercharge BC y = map U1 [y, -y, 3 - y, 4 - y, y - 4, y - 1]
 hypercharge BD y = map U1 [y, 3 - y, 2 - y, -y - 1]
-
--- Main function of module
-enumerateModelsByTopology :: Topo -> [Model]
-enumerateModelsByTopology topo = filter isCleanModel
-  $ fieldCombinations topo lorentz colour isospin hypercharge
