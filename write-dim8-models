@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+
+"""E.g.
+ `./write-dim8-models > output.dat`
+
+"""
+
+from python.dim8 import write_out
+
+write_out()
