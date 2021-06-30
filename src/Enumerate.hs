@@ -70,7 +70,7 @@ fieldCombinations topo lorentz colour isospin hypercharge =
   | a   <- [0 .. 3]
   , b   <- [0 .. 3]
   , i   <- [0 .. 3]
-  , y   <- [-6 .. 6]
+  , y   <- [-12 .. 12]
   , col <- colour topo a b
   , iso <- isospin topo i
   ]  -- Multiple choices for colour and isospin so include in comprehension

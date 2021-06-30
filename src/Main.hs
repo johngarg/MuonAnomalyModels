@@ -10,4 +10,4 @@ enumerateModelsByTopology topo = filter isCleanModel
   $ fieldCombinations topo lorentz colour isospin hypercharge
 
 main :: IO ()
-main = print $ map showField $ head (enumerateModelsByTopology BC)
+main = print (enumerateModelsByTopology BB)

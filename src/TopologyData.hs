@@ -39,6 +39,8 @@ colour BD a b = map
   , [(a, b), (b, a), (b + 1, a - 1), (b + 1, a - 1)]
   , [(a, b), (b, a), (b, a + 1), (b, a + 1)]
   ]
+colour GA a b = map (map applySU3) [[(a, b), (b, a), (a, b)]] -- scalar
+colour GB a b = map (map applySU3) [[(a, b), (b, a), (b, a), (a, b), (b, a)]] -- central fermion
 
 isospin :: Topo -> Int -> [[Irrep]]
 isospin BC i = map
@@ -50,7 +52,9 @@ isospin BC i = map
   , [i, i, i - 1, i, i, i - 1]
   , [i, i, i - 1, i, i, i + 1]
   ]
-isospin _ i = map
+isospin GA i = map (map SU2) [[i, i, i + 1], [i, i, i - 1]]
+isospin GB i = map (map SU2) [[i, i, i, i + 1, i + 1], [i, i, i, i - 1, i - 1]]
+isospin _  i = map
   (map SU2)
   [ [i, i + 1, i + 2, i + 1]
   , [i, i + 1, i, i + 1]
@@ -65,3 +69,5 @@ hypercharge BA y = map U1 [y, -y - 1, y + 4, -y - 1]
 hypercharge BB y = map U1 [y, -y - 1, y, 3 - y]
 hypercharge BC y = map U1 [y, -y, 3 - y, 4 - y, y - 4, y - 1]
 hypercharge BD y = map U1 [y, 3 - y, 2 - y, -y - 1]
+hypercharge GA y = map U1 [y, -6 - y, y + 3]
+hypercharge GB y = map U1 [y, -y, -6 - y, y + 3, -y - 3]

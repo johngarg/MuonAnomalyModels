@@ -4,6 +4,7 @@ module Formatting where
 
 import           Enumerate
 import           Data.Ratio
+import           Data.List
 
 -- Bool here is whether or not to return conjugate string for comparison with
 -- Python code
@@ -66,3 +67,10 @@ showField (Field (SU2SU2 0 0) su3 su2 u1) = "S" ++ formatSM False su3 su2 u1
 showField (Field (SU2SU2 1 0) su3 su2 u1) = "F" ++ formatSM True su3 su2 u1
 showField (Field (SU2SU2 _ _) _ _ _) = "NotImplemented"
 showField Field{} = "_"
+
+-- For pretty-printing models nicely
+tabulateFields :: [Field] -> String
+tabulateFields fields = intercalate "\t" (map showField fields)
+
+tabulateModels :: [Model] -> String
+tabulateModels models = intercalate "\n" (map tabulateFields models)
