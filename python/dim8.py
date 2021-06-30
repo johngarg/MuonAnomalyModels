@@ -63,7 +63,7 @@ def print_comps(comp_dict):
         # Wrap in quotes for reading into Haskell
         out = [f'"{s}"' for s in out]
         out_joined = ", ".join(out)
-        print(f"[{out_joined}],")
+        print(f"[{out_joined}]")
 
 
 def get_comps(key, dict_, verbose=True):
@@ -152,7 +152,6 @@ def print_report(notebook=True):
 
 def write_out():
     """Like `print_report` but just for writing the data out."""
-    print("[")
 
     # Dimension 6
     d6_ops = generate_d6_ops()
@@ -168,5 +167,3 @@ def write_out():
     filtered = filter_completions(d8_comps, d6_comps)
 
     print_comps(filtered)
-
-    print("]")
