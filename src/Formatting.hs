@@ -73,4 +73,9 @@ tabulateFields :: [Field] -> String
 tabulateFields fields = intercalate "\t" (map showField fields)
 
 tabulateModels :: [Model] -> String
-tabulateModels models = intercalate "\n" (map tabulateFields models)
+tabulateModels models =
+  intercalate "\n" (map (tabulateFields . modelFields) models)
+
+-- tabulateModel :: Model -> String
+-- tabulateModel (Model topo fields) =
+--   intercalate "\n" (map tabulateFields fields)

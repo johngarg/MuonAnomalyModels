@@ -6,11 +6,11 @@ module Enumerate where
 import           Data.List
 
 -- Data model
-data Irrep = SU2 Int | SU3 Int Int | SU2SU2 Int Int | U1 Int deriving (Show, Eq)
-data Field = Field Irrep Irrep Irrep Irrep deriving Show
-data Topo = BA | BB | BC | BD | GA | GB -- *B*ox (or *B* anomaly) and *G* minus 2 diagrams
+data Irrep = SU2 Int | SU3 Int Int | SU2SU2 Int Int | U1 Int deriving (Show, Eq, Ord)
+data Field = Field Irrep Irrep Irrep Irrep deriving (Show, Eq, Ord)
+data Topo = BA | BB | BC | BD | GA | GB deriving Show -- *B*ox (or *B* anomaly) and *G* minus 2 diagrams
 
-type Model = [Field]
+data Model = Model Topo [Field] deriving Show
 
 -- Functions that need to be defined to enumerate combinations
 -- lorentz :: Topo -> [Irrep]
@@ -19,6 +19,9 @@ type Model = [Field]
 -- hypercharge :: Topo -> Int -> [Irrep]
 
 -- Functions
+modelFields :: Model -> [Field]
+modelFields (Model _ fields) = fields
+
 applyIrrep :: (Int -> Int -> Irrep) -> (Int, Int) -> Irrep
 applyIrrep g (a, b) = g a b
 
@@ -47,7 +50,7 @@ isCleanField :: Field -> Bool
 isCleanField (Field su2su2 su3 su2 u1) = all isClean [su2su2, su3, su2, u1]
 
 isCleanModel :: Model -> Bool
-isCleanModel = all isCleanField
+isCleanModel (Model topo fields) = all isCleanField fields
 
 isSM :: Field -> Bool
 isSM (Field (SU2SU2 0 0) (SU3 0 0) (SU2 1) (U1 3)) = True    -- H
@@ -66,7 +69,7 @@ fieldCombinations
   -> (Topo -> Int -> [Irrep])
   -> [Model]
 fieldCombinations topo lorentz colour isospin hypercharge =
-  [ zipWith4 Field (lorentz topo) col iso (hypercharge topo y)
+  [ Model topo $ zipWith4 Field (lorentz topo) col iso (hypercharge topo y)
   | a   <- [0 .. 3]
   , b   <- [0 .. 3]
   , i   <- [0 .. 3]

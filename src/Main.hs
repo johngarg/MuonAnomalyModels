@@ -3,6 +3,7 @@ module Main where
 import           Enumerate
 import           Formatting
 import           TopologyData
+import           Overlap
 
 -- Central function of module
 enumerateModelsByTopology :: Topo -> [Model]
@@ -16,8 +17,6 @@ readModels = do
   contents <- readFile fileName
   let models = map (read :: String -> [String]) (lines contents)
   return models
-
--- Check subsets
 
 main :: IO ()
 main = print (enumerateModelsByTopology BB)

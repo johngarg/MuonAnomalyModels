@@ -8,7 +8,6 @@ import           Enumerate
 -- Irrep data
 -- NOTE: All b -> sμμ data is in the order ψ1, φ1, ψ2, φ2
 -- NOTE: Topology "c" contains two VLFs
--- TODO: Still need to put in g-2 data
 
 lorentz :: Topo -> [Irrep]
 lorentz BC = map applySU2SU2 [(1, 0), (1, 0), (0, 0), (1, 0), (1, 0), (0, 0)]
