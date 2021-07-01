@@ -9,8 +9,8 @@ import           Data.Set                       ( fromList )
 allSameExotics :: Model -> Model -> Bool
 allSameExotics (Model _ fields) (Model _ fields') = noSM == noSM'
  where
-  noSM  = fromList (filter isSM fields)
-  noSM' = fromList (filter isSM fields')
+  noSM  = fromList (filter (not . isSM) fields)
+  noSM' = fromList (filter (not . isSM) fields')
 
 overlap :: [Model] -> [Model] -> [(Model, Model)]
 overlap models models' =
