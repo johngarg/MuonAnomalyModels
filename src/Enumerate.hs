@@ -8,9 +8,10 @@ import           Data.List
 -- Data model
 data Irrep = SU2 Int | SU3 Int Int | SU2SU2 Int Int | U1 Int deriving (Show, Eq, Ord)
 data Field = Field Irrep Irrep Irrep Irrep deriving (Show, Eq, Ord)
-data Topo = BA | BB | BC | BD | GA | GB deriving Show -- *B*ox (or *B* anomaly) and *G* minus 2 diagrams
+data Topo = BA | BB | BC | BD | GA | GB deriving (Show, Eq, Ord)
+  -- *B*ox (or *B* anomaly) and *G* minus 2 diagrams
 
-data Model = Model Topo [Field] deriving Show
+data Model = Model Topo [Field] deriving (Show, Eq, Ord)
 
 -- Functions that need to be defined to enumerate combinations
 -- lorentz :: Topo -> [Irrep]
@@ -54,6 +55,7 @@ isCleanModel (Model topo fields) = all isCleanField fields
 
 isSM :: Field -> Bool
 isSM (Field (SU2SU2 0 0) (SU3 0 0) (SU2 1) (U1 3)) = True    -- H
+isSM (Field (SU2SU2 0 0) (SU3 0 0) (SU2 1) (U1 (-3))) = True -- Hc
 isSM (Field (SU2SU2 1 0) (SU3 0 0) (SU2 1) (U1 (-3))) = True -- L
 isSM (Field (SU2SU2 1 0) (SU3 1 0) (SU2 1) (U1 1)) = True    -- Q
 isSM (Field (SU2SU2 1 0) (SU3 0 1) (SU2 0) (U1 (-4))) = True -- ub

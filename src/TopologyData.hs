@@ -10,6 +10,8 @@ import           Enumerate
 -- NOTE: Topology "c" contains two VLFs
 
 lorentz :: Topo -> [Irrep]
+lorentz GA = map applySU2SU2 [(1, 0), (0, 0), (1, 0)]
+lorentz GB = map applySU2SU2 [(1, 0), (1, 0), (0, 0), (0, 0)]
 lorentz BC = map applySU2SU2 [(1, 0), (1, 0), (0, 0), (1, 0), (1, 0), (0, 0)]
 lorentz _  = map applySU2SU2 [(1, 0), (0, 0), (1, 0), (0, 0)]
 
@@ -38,8 +40,8 @@ colour BD a b = map
   , [(a, b), (b, a), (b + 1, a - 1), (b + 1, a - 1)]
   , [(a, b), (b, a), (b, a + 1), (b, a + 1)]
   ]
-colour GA a b = map (map applySU3) [[(a, b), (b, a), (a, b)]] -- scalar
-colour GB a b = map (map applySU3) [[(a, b), (b, a), (b, a), (a, b), (b, a)]] -- central fermion
+colour GA a b = map (map applySU3) [[(a, b), (b, a), (b, a)]] -- scalar
+colour GB a b = map (map applySU3) [[(a, b), (b, a), (b, a), (b, a), (a, b)]] -- central fermion
 
 isospin :: Topo -> Int -> [[Irrep]]
 isospin BC i = map
@@ -68,5 +70,11 @@ hypercharge BA y = map U1 [y, -y - 1, y + 4, -y - 1]
 hypercharge BB y = map U1 [y, -y - 1, y, 3 - y]
 hypercharge BC y = map U1 [y, -y, 3 - y, 4 - y, y - 4, y - 1]
 hypercharge BD y = map U1 [y, 3 - y, 2 - y, -y - 1]
-hypercharge GA y = map U1 [y, -6 - y, y + 3]
-hypercharge GB y = map U1 [y, -y, -6 - y, y + 3, -y - 3]
+
+hypercharge GA y = map U1 [y, -6 - y, -y - 3]
+hypercharge GB y = map U1 [y, -y, -6 - y, -y - 3, y + 3]
+
+-- Central function of module
+enumerateModelsByTopology :: Topo -> [Model]
+enumerateModelsByTopology topo = filter isCleanModel
+  $ fieldCombinations topo lorentz colour isospin hypercharge
