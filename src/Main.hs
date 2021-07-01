@@ -6,12 +6,23 @@ import           TopologyData
 import           Overlap
 
 -- Read in tree-level models from Python output
-readModels :: IO [[String]]
-readModels = do
-  let fileName = "data/treelevelmodels.csv"
+readModels :: String -> IO [[String]]
+readModels file = do
+  let fileName = file
   contents <- readFile fileName
   let models = map (read :: String -> [String]) (lines contents)
   return models
+
+checkTreeLevelOverlap :: IO ()
+checkTreeLevelOverlap = do
+  trees  <- readModels "data/treelevelmodels.csv"
+  trees' <- readModels "data/treelevelmodels_diracpartners.csv"
+  -- Get overlap
+  print $ map snd $ overlapStr gMinus2 (trees ++ trees')
+ where
+  gMinus2 =
+    map showModel $ enumerateModelsByTopology GA ++ enumerateModelsByTopology GB
+
 
 main :: IO ()
 main = putStrLn $ tabulateModels $ map snd $ overlap gMinus2 boxes

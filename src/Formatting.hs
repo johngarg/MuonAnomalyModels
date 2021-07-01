@@ -68,6 +68,9 @@ showField (Field (SU2SU2 1 0) su3 su2 u1) = "F" ++ formatSM True su3 su2 u1
 showField (Field (SU2SU2 _ _) _ _ _) = "NotImplemented"
 showField Field{} = "_"
 
+showModel :: Model -> [String]
+showModel (Model _ fields) = map showField fields
+
 -- For pretty-printing models nicely
 tabulateFields :: [Field] -> String
 tabulateFields fields = intercalate "\t" (map showField fields)

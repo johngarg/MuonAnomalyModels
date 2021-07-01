@@ -7,4 +7,5 @@
 
 from python.dim8 import write_out
 
-write_out()
+# Toggle True and False here for `_partners' file
+write_out(partners=True)

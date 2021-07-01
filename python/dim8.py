@@ -11,7 +11,24 @@ from neutrinomass.completions import filter_completions
 from neutrinomass.completions import collect_completions
 from neutrinomass.completions import EffectiveOperator
 
-from neutrinomass.completions.core import format_quantum_numbers
+
+def format_quantum_numbers(info: tuple):
+    """Takes an expression like
+
+    ('S', 1, 0, 2, ('3b', 1), ('y', 2/3))
+
+    and returns a string like
+
+    S(3, 3, 2/3)(3b: 1)
+
+    """
+    lorentz, su3_up, su3_down, su2, *charges = info
+    su3_dim = lambda m, n: 0.5 * (m + 1) * (n + 1) * (m + n + 2)
+    # For now just add the bar for more lowered than raised indices, but for
+    # larger reps this will be problematic
+    su3_dim_format = lambda m, n: str(int(su3_dim(m, n))) + ("b" if n > m else "")
+    charges_dict = dict(charges)
+    return f"{lorentz}({su3_dim_format(int(su3_up), int(su3_down))}, {str(int(su2) + 1)}, {charges_dict['y']})"
 
 
 def sm_singlets(*fields):
@@ -47,17 +64,21 @@ def exotic_info(comp):
     return info
 
 
-def print_comps(comp_dict):
+def print_comps(comp_dict, partners=True):
     """Aux. function to print models nicely"""
     for fields, comps in comp_dict.items():
         # They should all have the same field content, so just take first
         comp = comps[0]
         # Working with only left-handed fermion fields in Haskell code, so fix
         # that up here for comparison
-        fermion_partners = [
-            f.conj for f in comp.exotics if (f.is_fermion and not f.is_real_sm_irrep)
-        ]
-        comp.exotics = comp.exotics.union(set(fermion_partners))
+
+        if partners:
+            fermion_partners = [
+                f.conj
+                for f in comp.exotics
+                if (f.is_fermion and not f.is_real_sm_irrep)
+            ]
+            comp.exotics = comp.exotics.union(set(fermion_partners))
 
         out = {format_quantum_numbers(f) for f in exotic_info(comp).values()}
         # Wrap in quotes for reading into Haskell
@@ -150,13 +171,13 @@ def print_report(notebook=True):
     print_comps(filtered)
 
 
-def write_out():
+def write_out(partners=True):
     """Like `print_report` but just for writing the data out."""
 
     # Dimension 6
     d6_ops = generate_d6_ops()
     d6_comps = get_comps(["O_{lq}^b", "O_{lq}^c"], d6_ops, verbose=False)
-    print_comps(d6_comps)
+    print_comps(d6_comps, partners=partners)
 
     # Dimension 8
     d8_ops = generate_d8_ops()
@@ -166,4 +187,4 @@ def write_out():
     d8_comps = get_comps(wanted_comps, d8_ops, verbose=False)
     filtered = filter_completions(d8_comps, d6_comps)
 
-    print_comps(filtered)
+    print_comps(filtered, partners=partners)
