@@ -15,17 +15,17 @@ readModels file = do
 
 checkTreeLevelOverlap :: IO ()
 checkTreeLevelOverlap = do
-  trees  <- readModels "data/treelevelmodels.csv"
-  trees' <- readModels "data/treelevelmodels_diracpartners.csv"
+  trees             <- readModels "data/treelevelmodels.csv"
+  treesWithPartners <- readModels "data/treelevelmodels_diracpartners.csv"
   -- Get overlap
-  print $ map snd $ overlapStr gMinus2 (trees ++ trees')
+  print $ map snd $ overlapStr gMinus2 (trees ++ treesWithPartners)
  where
   gMinus2 =
     map showModel $ enumerateModelsByTopology GA ++ enumerateModelsByTopology GB
 
 
 main :: IO ()
-main = putStrLn $ tabulateModels $ map snd $ overlap gMinus2 boxes
+main = putStrLn $ tabulateModels gMinus2
  where
   gMinus2 = enumerateModelsByTopology GA ++ enumerateModelsByTopology GB
   boxes =
