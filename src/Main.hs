@@ -21,15 +21,17 @@ checkTreeLevelOverlap = do
   print $ map snd $ overlapStr gMinus2 (trees ++ treesWithPartners)
  where
   gMinus2 =
-    map showModel $ enumerateModelsByTopology GA ++ enumerateModelsByTopology GB
+    map showModel $ enumerateModelsByTopology G1 ++ enumerateModelsByTopology G2
 
 
 main :: IO ()
 main = putStrLn $ tabulateModels gMinus2
  where
-  gMinus2 = enumerateModelsByTopology GA ++ enumerateModelsByTopology GB
+  gMinus2 = enumerateModelsByTopology G1 ++ enumerateModelsByTopology G2
   boxes =
-    enumerateModelsByTopology BA
-      ++ enumerateModelsByTopology BB
-      ++ enumerateModelsByTopology BC
-      ++ enumerateModelsByTopology BD
+    enumerateModelsByTopology B1a
+      ++ enumerateModelsByTopology B1b
+      ++ enumerateModelsByTopology B2a
+      ++ enumerateModelsByTopology B2b
+      ++ enumerateModelsByTopology B3a
+      ++ enumerateModelsByTopology B3b

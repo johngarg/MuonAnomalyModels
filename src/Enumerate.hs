@@ -8,8 +8,8 @@ import           Data.List
 -- Data model
 data Irrep = SU2 Int | SU3 Int Int | SU2SU2 Int Int | U1 Int deriving (Show, Eq, Ord)
 data Field = Field Irrep Irrep Irrep Irrep deriving (Show, Eq, Ord)
-data Topo = BA | BB | BC | BD | GA | GB deriving (Show, Eq, Ord)
-  -- *B*ox (or *B* anomaly) and *G* minus 2 diagrams
+data Topo = B1a | B1b | B2a | B2b | B3a | B3b | G1 | G2 deriving (Show, Eq, Ord)
+  -- *B*ox (or *B* anomaly) and *G*-minus-2 diagrams
 
 data Model = Model Topo [Field] deriving (Show, Eq, Ord)
 
@@ -32,10 +32,16 @@ applySU3 = applyIrrep SU3
 applySU2SU2 :: (Int, Int) -> Irrep
 applySU2SU2 = applyIrrep SU2SU2
 
+-- Max SU3 Dynkins taken as (0, 2) and (2, 0)
+-- Choose max SU2 Dynkin as 4
+-- Motivated by field content that generates dim-6 operators at tree-level
+maxSU2Dynkin :: Int
+maxSU2Dynkin = 4
+
 -- Need to clean irreps so there are no negative dynkins
 isClean :: Irrep -> Bool
 isClean (U1  _     ) = True
-isClean (SU2 a     ) = (a >= 0) && (a < 4)
+isClean (SU2 a     ) = (a >= 0) && (a < maxSU2Dynkin)
 isClean (SU3    0 0) = True
 isClean (SU3    1 0) = True
 isClean (SU3    0 1) = True
@@ -51,7 +57,7 @@ isCleanField :: Field -> Bool
 isCleanField (Field su2su2 su3 su2 u1) = all isClean [su2su2, su3, su2, u1]
 
 isCleanModel :: Model -> Bool
-isCleanModel (Model topo fields) = all isCleanField fields
+isCleanModel (Model _ fields) = all isCleanField fields
 
 isSM :: Field -> Bool
 isSM (Field (SU2SU2 0 0) (SU3 0 0) (SU2 1) (U1 3)) = True    -- H

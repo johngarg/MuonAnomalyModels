@@ -24,16 +24,16 @@ main = hspec $ do
       overlap [m1, m3] [m2, m4] `shouldBe` [(m1, m2)]
     it "checks overlapping exotic field content accounting for conj" $ do
       overlap [m1, m3] [m1', m4] `shouldBe` [(m1, m1')]
-    it "checks S3 model in BA completions" $ do
-      overlap [Model GA [s3]] (enumerateModelsByTopology BA)
-        `shouldBe` [(Model GA [s3], Model BA [l, s3, q, s3])]
+    it "checks S3 model in B1a completions" $ do
+      overlap [Model G1 [s3]] (enumerateModelsByTopology B1a)
+        `shouldBe` [(Model G1 [s3], Model B1a [l, s3, q, s3])]
  where
-  m1  = Model GA [(Field (SU2SU2 0 0) (SU3 0 0) (SU2 5) (U1 3)), h]
-  m1' = Model GA [(Field (SU2SU2 0 0) (SU3 0 0) (SU2 5) (U1 (-3)))]
-  m2  = Model BB [(Field (SU2SU2 0 0) (SU3 0 0) (SU2 5) (U1 3)), q]
-  m3  = Model BA [(Field (SU2SU2 0 0) (SU3 0 0) (SU2 4) (U1 1)), q]
+  m1  = Model G1 [(Field (SU2SU2 0 0) (SU3 0 0) (SU2 5) (U1 3)), h]
+  m1' = Model G1 [(Field (SU2SU2 0 0) (SU3 0 0) (SU2 5) (U1 (-3)))]
+  m2  = Model B3a [(Field (SU2SU2 0 0) (SU3 0 0) (SU2 5) (U1 3)), q]
+  m3  = Model B1a [(Field (SU2SU2 0 0) (SU3 0 0) (SU2 4) (U1 1)), q]
   m4  = Model
-    BC
+    B3b
     [ (Field (SU2SU2 0 0) (SU3 0 0) (SU2 5) (U1 3))
     , (Field (SU2SU2 0 0) (SU3 1 1) (SU2 5) (U1 3))
     , q

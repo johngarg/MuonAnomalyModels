@@ -10,41 +10,71 @@ import           Enumerate
 -- NOTE: Topology "c" contains two VLFs
 
 lorentz :: Topo -> [Irrep]
-lorentz GA = map applySU2SU2 [(1, 0), (0, 0), (1, 0)]
-lorentz GB = map applySU2SU2 [(1, 0), (1, 0), (0, 0), (0, 0)]
-lorentz BC = map applySU2SU2 [(1, 0), (1, 0), (0, 0), (1, 0), (1, 0), (0, 0)]
-lorentz _  = map applySU2SU2 [(1, 0), (0, 0), (1, 0), (0, 0)]
+lorentz G1  = map applySU2SU2 [(1, 0), (0, 0), (1, 0)]
+lorentz G2  = map applySU2SU2 [(1, 0), (1, 0), (0, 0), (0, 0)]
+lorentz B2a = map applySU2SU2 [(1, 0), (1, 0), (0, 0), (1, 0), (1, 0), (0, 0)]
+lorentz B2b = map applySU2SU2 [(1, 0), (1, 0), (0, 0), (1, 0), (1, 0), (0, 0)]
+lorentz _   = map applySU2SU2 [(1, 0), (0, 0), (1, 0), (0, 0)]
 
 colour :: Topo -> Int -> Int -> [[Irrep]]
-colour BA a b = map
+colour B1a a b = map
   (map applySU3)
-  [ [(a, b), (b - 1, a), (a, b - 1), (b - 1, a)]
-  , [(a, b), (b + 1, a - 1), (a - 1, b + 1), (b + 1, a - 1)]
-  , [(a, b), (b, a + 1), (a + 1, b), (b, a + 1)]
+  [ [(a, b), (b, a), (b - 1, a), (a, b)]
+  , [(a, b), (b, a), (b, a + 1), (a, b)]
+  , [(a, b), (b, a), (b + 1, a - 1), (a, b)]
   ]
-colour BB a b = map
+colour B1b a b = map
   (map applySU3)
-  [ [(a, b), (b - 1, a), (a, b), (b, a)]
-  , [(a, b), (b + 1, a - 1), (a, b), (b, a)]
-  , [(a, b), (b, a + 1), (a, b), (b, a)]
+  [ [(a, b), (b, a), (a - 1, b), (b, a)]
+  , [(a, b), (b, a), (a, b + 1), (b, a)]
+  , [(a, b), (b, a), (a + 1, b - 1), (b, a)]
   ]
-colour BC a b = map
+colour B2a a b = map
   (map applySU3)
-  [ [(a, b), (b, a), (b, a), (b, a - 1), (a - 1, b), (a - 1, b)]
-  , [(a, b), (b, a), (b, a), (b - 1, a + 1), (a + 1, b - 1), (a + 1, b - 1)]
-  , [(a, b), (b, a), (b, a), (b + 1, a), (a, b + 1), (a, b + 1)]
+  [ [(a, b), (b, a), (b, a), (a, b), (b, a), (a - 1, b)]
+  , [(a, b), (b, a), (b, a), (a, b), (b, a), (a, b + 1)]
+  , [(a, b), (b, a), (b, a), (a, b), (b, a), (a + 1, b - 1)]
   ]
-colour BD a b = map
+colour B2b a b = map
+  (map applySU3)
+  [ [(a, b), (b, a), (b, a), (b, a - 1), (a - 1, b), (b, a - 1)]
+  , [(a, b), (b, a), (b, a), (b + 1, a), (a, b + 1), (b + 1, a)]
+  , [(a, b), (b, a), (b, a), (b - 1, a + 1), (a + 1, b - 1), (b - 1, a + 1)]
+  ]
+colour B3a a b = map
+  (map applySU3)
+  [ [(a, b), (b, a), (a, b), (b - 1, a)]
+  , [(a, b), (b, a), (a, b), (b, a + 1)]
+  , [(a, b), (b, a), (a, b), (b + 1, a - 1)]
+  ]
+colour B3b a b = map
   (map applySU3)
   [ [(a, b), (b, a), (b - 1, a), (b - 1, a)]
-  , [(a, b), (b, a), (b + 1, a - 1), (b + 1, a - 1)]
   , [(a, b), (b, a), (b, a + 1), (b, a + 1)]
+  , [(a, b), (b, a), (b + 1, a - 1), (b + 1, a - 1)]
   ]
-colour GA a b = map (map applySU3) [[(a, b), (b, a), (b, a)]] -- scalar
-colour GB a b = map (map applySU3) [[(a, b), (b, a), (b, a), (b, a), (a, b)]] -- central fermion
+colour G1 a b = map (map applySU3) [[(a, b), (b, a), (b, a)]] -- scalar
+colour G2 a b = map (map applySU3) [[(a, b), (b, a), (b, a), (b, a), (a, b)]] -- central fermion
+
+isospinB1Template :: Int -> [[Int]]
+isospinB1Template i =
+  [ [i, i + 1, i, i + 1]
+  , [i, i + 1, i + 2, i + 1]
+  , [i, i - 1, i, i - 1]
+  , [i, i - 1, i - 2, i - 1]
+  ]
 
 isospin :: Topo -> Int -> [[Irrep]]
-isospin BC i = map
+isospin B1a i = map (map SU2) (isospinB1Template i)
+isospin B1b i = map (map SU2) (isospinB1Template i)
+isospin B2a i = map
+  (map SU2)
+  [ [i, i, i + 1, i, i, i + 1]
+  , [i, i, i + 1, i, i, i - 1]
+  , [i, i, i - 1, i, i, i + 1]
+  , [i, i, i - 1, i, i, i - 1]
+  ]
+isospin B2b i = map
   (map SU2)
   [ [i, i, i + 1, i + 2, i + 2, i + 1]
   , [i, i, i + 1, i, i, i + 1]
@@ -53,9 +83,14 @@ isospin BC i = map
   , [i, i, i - 1, i, i, i - 1]
   , [i, i, i - 1, i, i, i + 1]
   ]
-isospin GA i = map (map SU2) [[i, i, i + 1], [i, i, i - 1]]
-isospin GB i = map (map SU2) [[i, i, i, i + 1, i + 1], [i, i, i, i - 1, i - 1]]
-isospin _  i = map
+isospin B3a i = map
+  (map SU2)
+  [ [i, i + 1, i, i + 1]
+  , [i, i + 1, i, i - 1]
+  , [i, i - 1, i, i + 1]
+  , [i, i - 1, i, i - 1]
+  ]
+isospin B3b i = map
   (map SU2)
   [ [i, i + 1, i + 2, i + 1]
   , [i, i + 1, i, i + 1]
@@ -64,15 +99,19 @@ isospin _  i = map
   , [i, i - 1, i, i - 1]
   , [i, i - 1, i, i + 1]
   ]
+isospin G1 i = map (map SU2) [[i, i, i + 1], [i, i, i - 1]]
+isospin G2 i = map (map SU2) [[i, i, i, i + 1, i + 1], [i, i, i, i - 1, i - 1]]
 
 hypercharge :: Topo -> Int -> [Irrep]
-hypercharge BA y = map U1 [y, -y - 1, y + 4, -y - 1]
-hypercharge BB y = map U1 [y, -y - 1, y, 3 - y]
-hypercharge BC y = map U1 [y, -y, 3 - y, 4 - y, y - 4, y - 1]
-hypercharge BD y = map U1 [y, 3 - y, 2 - y, -y - 1]
+hypercharge B1a y = map U1 [y, 3 - y, 2 - y, y - 3]
+hypercharge B1b y = map U1 [y, 3 - y, y - 4, 3 - y]
+hypercharge B2a y = map U1 [y, -y, 3 - y, y, -y, y - 1]
+hypercharge B2b y = map U1 [y, -y, 3 - y, 4 - y, y - 4, 1 - y]
+hypercharge B3a y = map U1 [y, 3 - y, y, -y - 1]
+hypercharge B3b y = map U1 [y, 3 - y, 2 - y, -y - 1]
 
-hypercharge GA y = map U1 [y, -6 - y, -y - 3]
-hypercharge GB y = map U1 [y, -y, -6 - y, -y - 3, y + 3]
+hypercharge G1  y = map U1 [y, -6 - y, -y - 3]
+hypercharge G2  y = map U1 [y, -y, -6 - y, -y - 3, y + 3]
 
 -- Central function of module
 enumerateModelsByTopology :: Topo -> [Model]
