@@ -25,7 +25,8 @@ checkTreeLevelOverlap = do
 
 
 main :: IO ()
-main = putStrLn $ tabulateModels gMinus2
+main = print $ map snd $ overlapStr (map showModel boxes)
+                                    (map showModel gMinus2)
  where
   gMinus2 = enumerateModelsByTopology G1 ++ enumerateModelsByTopology G2
   boxes =
